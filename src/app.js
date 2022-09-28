@@ -4,7 +4,6 @@ const xss = require("xss-clean");
 const mongoSanitize = require("express-mongo-sanitize");
 const compression = require("compression");
 const cors = require("cors");
-const passport = require("passport");
 const httpStatus = require("http-status");
 const config = require("./config/config");
 const morgan = require("./config/morgan");
@@ -36,8 +35,16 @@ app.use(mongoSanitize());
 app.use(compression());
 
 // enable cors
-app.use(cors());
-app.options("*", cors());
+app.use(cors({ origin: "http://localhost:3000" }));
+
+app.use(function (req, res, next) {
+  res.header("Content-Type", "application/json;charset=UTF-8");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 
 // v1 api routes
 app.use("/v1", routes);

@@ -18,23 +18,31 @@ const currentSchema = mongoose.Schema(
   { _id: false }
 );
 
+const dailySchema = mongoose.Schema(
+  {
+    day: { type: Date, default: null },
+    hourly_temperature: [
+      {
+        type: Number,
+        required: true,
+        validate: {
+          validator: function () {
+            return !(this.hourly_temperature.length > 24);
+          },
+          message: (props) => `${props.value} exceeds maximum array size {24}`,
+        },
+      },
+    ],
+  },
+  { _id: false }
+);
+
 const weatherSchema = mongoose.Schema({
   lat: { type: String, required: false },
   lon: { type: String, required: false },
   location: { city: { type: String }, country: { type: String } },
   current: currentSchema,
-  hourly_temperature: [
-    {
-      type: Number,
-      required: true,
-      validate: {
-        validator: function () {
-          return !(this.hourly_temperature.length > 24);
-        },
-        message: (props) => `${props.value} exceeds maximum array size {24}`,
-      },
-    },
-  ],
+  daily: [dailySchema],
 });
 
 // add plugin that converts mongoose to json

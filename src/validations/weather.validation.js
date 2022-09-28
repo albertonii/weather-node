@@ -9,7 +9,12 @@ const createWeather = {
       temp: Joi.string(),
     },
     location: { city: Joi.string(), country: Joi.string() },
-    hourly_temperature: Joi.array().items(Joi.number().required()),
+    daily: Joi.array().items(
+      Joi.object().keys({
+        day: Joi.date().required(),
+        hourly_temperature: Joi.array().items(Joi.number().required()),
+      })
+    ),
   }),
 };
 
